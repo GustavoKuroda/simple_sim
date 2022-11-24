@@ -77,6 +77,12 @@
  The `cause` method is the simulation heart as it's constantly invoked, by dequeueing a event and increasing the time of simulation to the time of occurrence of this event.
 
  A discrete event simulation have three types of events:
- - 1, arrival: the arrival of a client at the center of service;
- - 2, request: the client request access to the server ou service;
- - 3, release: completion of a client attendance, leaving the server.
+ - 1 - arrival: the arrival of a client at the center of service;
+ - 2 - request: the client request access to the server ou service;
+ - 3 - release: completion of a client attendance, leaving the server.
+
+ At the initialization of the model the first arrival is schedule to immediate execution. Each arrival schedule a request to immediate execution and the next arrival, using `expntl` method from _rand, a `Rand` class object.
+
+ A request is attended if there is a free resource (server), scheduling a release event using `expntl` method. If there isn't a free resource (server), the request is enqueued to future execution.
+
+ Finishing the simulation, `report` method is invoked to generate a report message with utilization, mean busy time, average queue length, total releases and queue exits count.
