@@ -1,5 +1,5 @@
 # Overview
- A Python functional extension for discrete event simulation based in 'SMPL' (original C version by Myron H. MacDougall)
+ A Python functional extension for discrete event simulation based in 'SMPL' (original C version by Myron H. MacDougall).
 
 # Usage
  To create a simulation using the simple_sim library, is necessary to import the following symbols: `Model`, `RESERVED` and, if necessary, `QUEUED`. Use the command:
