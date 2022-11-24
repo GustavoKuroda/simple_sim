@@ -1,7 +1,7 @@
 from simple_sim import Model, RESERVED
 
 # initializes the center of service
-model = Model(120, 5.0, 6.0, 1) # total_sim_time, inter_arrivel_time, service_time, sequence
+model = Model(120, 5.0, 6.0, 1) # total_sim_time, inter_arrival_time, service_time, sequence
 model.init('Example M/M/1')
 model.resource(1) # total_servers
 
