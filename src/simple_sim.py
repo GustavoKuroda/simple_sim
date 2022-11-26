@@ -48,7 +48,10 @@ class Event:
         """
         Compare the time of occurrence of two events.
         - Parameters:
-            - other (Event): event to be compared to. 
+            - other (Event): event to be compared to.
+        - Returns:
+            - True, if self.time is lower than other.time
+            - False, if self.time is greater than other.time
         """
         return self.time < other.time
 
