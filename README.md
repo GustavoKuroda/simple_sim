@@ -62,7 +62,7 @@
 
  The `cause` method is the simulation heart as it's constantly invoked, by dequeueing a event and increasing the time of simulation to the time of occurrence of this event.
 
- A discrete event simulation have three types of events:
+ A simple discrete event simulation have three types of events:
  - 1 - arrival: the arrival of a client at the center of service;
  - 2 - request: the client request access to the server ou service;
  - 3 - release: completion of a client attendance, leaving the server.
