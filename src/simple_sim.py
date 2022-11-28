@@ -71,7 +71,6 @@ class FEL:
         """
         heapq.heappush(self._queue, e)
 
-
     def trigger(self):
         """
         Trigger the head queue event.

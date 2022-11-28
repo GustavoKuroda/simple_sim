@@ -26,7 +26,7 @@
  model.resource(1) # total_servers
  ```
 
- To trace the trace the events and the respective time of occurrence, the `trace` method can be used with the argument `True`.
+ To trace the events and the respective time of occurrence, the `trace` method can be used with the argument `True`.
 
  ```
  model.trace(True)
