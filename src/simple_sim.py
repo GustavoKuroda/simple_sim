@@ -34,7 +34,7 @@ class Event:
     """
     Information about the events of the simulation.
     """
-    def __init__(self, kind, time, costumer):
+    def __init__(self, kind, time, customer):
         # kind of event - '1' = arrival, '2' = request, '3' = release
         self.kind = kind
 
@@ -42,7 +42,7 @@ class Event:
         self.time = time
 
         # client associated
-        self.costumer = costumer
+        self.customer = customer
 
     def __lt__(self, other):
         """
@@ -107,7 +107,7 @@ class Resource:
             - index (int): Identifier of the resource
         """
         self.index = index
-        self.costumer = 0
+        self.customer = 0
         self.busy = False
         self.busy_time = 0.0
         self.total_busy_time = 0.0
@@ -121,7 +121,7 @@ class Model:
         Initialize the center of service (model).
         - Parameters:
             - total_sim_time (float): Total time of the simulation.
-            - inter_arrival_time (float): Mean time between costumers to arrive.
+            - inter_arrival_time (float): Mean time between customers to arrive.
             - service_time (float): Mean time to completion.
             - resources (int): Number of servers.
         """
@@ -146,15 +146,15 @@ class Model:
         # number of available resources
         self._resources = {}
 
-        # counter of costumers
-        self.costumer = 1
+        # counter of customers
+        self.customer = 1
 
         # state variable (number of events triggered)
         self.count = 0
 
         # schedules the first event
         if sequence == 1:
-            self.schedule('1', 0.0, self.costumer)
+            self.schedule('1', 0.0, self.customer)
 
         # pseudo-random number generator.
         self._rand = Rand()
@@ -212,25 +212,25 @@ class Model:
 
         self._resources = ResourceData(total_servers)
 
-    def schedule(self, kind, time_of_occur, costumer):
+    def schedule(self, kind, time_of_occur, customer):
         """
         Schedules a event based on the time of occurrence.
         - Parameters:
             - kind (char): '1' = arrival, '2' = request, '3' = release.
             - time_of_occur (float): time of occurrence of the event.
-            - costumer (int): number of the costumer associated to the event.
+            - customer (int): number of the customer associated to the event.
         """
         # append a object Event to the fel
-        e = Event(kind, self.time() + time_of_occur, costumer)
+        e = Event(kind, self.time() + time_of_occur, customer)
         self.fel.append(e)
 
-    def request(self, costumer):
+    def request(self, customer):
         """
         If a resource is free, request() reserves the resource,
         returning RESERVED. In case there is no resource(s), request() 
         enqueue the request and return QUEUED.
         - Parameters:
-            - costumer (int): costumer related to the request.
+            - customer (int): customer related to the request.
         - Returns:
             - RESERVED, if there is a free resource.
             - QUEUED, if there is no free resource(s).
@@ -245,12 +245,12 @@ class Model:
 
             chosen.busy = True
             chosen.busy_time = self.now
-            chosen.costumer = costumer
+            chosen.customer = customer
 
             self._resources.busy_servers += 1
 
             if self._trace:
-                print("({}) \tCostumer {} requested and accessed at {}.".format(self._model_name, costumer, self.time()))
+                print("({}) \tcustomer {} requested and accessed at {}.".format(self._model_name, customer, self.time()))
             return RESERVED
         else:
             # calculate the total queueing time
@@ -259,13 +259,13 @@ class Model:
             self.time_of_last_change = self.now
 
             # enqueue the request
-            self.req_queue.append(costumer)
+            self.req_queue.append(customer)
             
             if self._trace:
-                print("({}) \tCostumer {} requested but queued at {}. (inq = {})".format(self._model_name, costumer, self.time(), len(self.req_queue)))
+                print("({}) \tcustomer {} requested but queued at {}. (inq = {})".format(self._model_name, customer, self.time(), len(self.req_queue)))
             return QUEUED
 
-    def release(self, costumer):
+    def release(self, customer):
         """
         If a request was enqueued, release() dequeue the request,
         putting it at the head of the FEL.
@@ -276,12 +276,12 @@ class Model:
         matching_server = None
         for iterator in range(0, self._resources.total_servers):
             server = self._resources.servers[iterator]
-            if server.costumer == costumer:
+            if server.customer == customer:
                 matching_server = server
                 break
 
         if matching_server is None:
-            raise ValueError("There is no server reserved for the given costumer.")
+            raise ValueError("There is no server reserved for the given customer.")
             
         matching_server.busy = False
         matching_server.total_busy_time += self.now - matching_server.busy_time
@@ -289,12 +289,12 @@ class Model:
         self._resources.busy_servers -= 1
 
         if self._trace:
-            print("({}) \tCostumer {} leaving at {}.".format(self._model_name, self.costumer, self.time()))
+            print("({}) \tcustomer {} leaving at {}.".format(self._model_name, self.customer, self.time()))
 
         if len(self.req_queue) > 0:
             # dequeue an enqueued request
-            costumer = self.req_queue.popleft()
-            self.schedule('3', self._rand.expntl(self.service_time) , costumer)
+            customer = self.req_queue.popleft()
+            self.schedule('3', self._rand.expntl(self.service_time) , customer)
 
             # calculate the total queueing time
             self.total_queueing_time += self._queue_length * (self.now - self.time_of_last_change)
@@ -306,12 +306,12 @@ class Model:
 
             matching_server.busy = True
             matching_server.busy_time = self.now
-            matching_server.costumer = costumer
+            matching_server.customer = customer
 
             self._resources.busy_servers += 1
 
             if self._trace:
-                print("({}) \tCostumer {} dequeued and accessed at {}. (inq = {})".format(self._model_name, costumer, self.time(), len(self.req_queue)))
+                print("({}) \tcustomer {} dequeued and accessed at {}. (inq = {})".format(self._model_name, customer, self.time(), len(self.req_queue)))
 
     def cause(self):
         """
@@ -320,13 +320,13 @@ class Model:
         - Returns:
             - Head event of FEL.
         """
-        # trigger a event, set the time of simulation and current costumer
+        # trigger a event, set the time of simulation and current customer
         e = self.fel.trigger()
         self.now = e.time
-        self.costumer = e.costumer
+        self.customer = e.customer
 
         if e.kind == '1' and self._trace:
-            print("({}) \tCostumer {} arrived at {}.".format(self._model_name, self.costumer, self.time()))
+            print("({}) \tcustomer {} arrived at {}.".format(self._model_name, self.customer, self.time()))
         return e
 
     def U(self):
