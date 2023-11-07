@@ -98,7 +98,7 @@ class ResourceData:
 
 class Resource:
     """
-    A instance of a resource.
+    An instance of a resource.
     """
     def __init__(self, index):
         """
@@ -420,42 +420,42 @@ class Rand:
         """
 
         # The comments below are based on the original comments of 'smpl'.
-        # In the comments, The lower short of I is called 'L', an the higher short of I is called 'H'.
+        # In the comments, The lower short of I is called 'L', and the higher short of I is called 'H'.
 
         # 16807*H->Hi
         # [C] p=(short *)&I
         # [C] Hi=*(p+1)*A
-        # (p is pointer to I)
+        # (p is a pointer to I)
         hi = get_short1(self._seed) * Rand.A
 
         # 16807*L->Lo
         # [C] *(p+1)=0
-        # (p is pointer to I)
+        # (p is a pointer to I)
         self._seed = set_short1(self._seed, 0)
 
         # [C] Lo=I*A
-        # (p is pointer to I)
+        # (p is a pointer to I)
         lo = self._seed * Rand.A
 
         # add high-order bits of Lo to Hi
         # [C] p=(short *)&Lo
         # [C] Hi+=*(p+1)
-        # (p is pointer to Lo)
+        # (p is a pointer to Lo)
         hi += get_short1(lo)
 
         # low-order bits of Hi->LO
         # [C] q=(short *)&Hi
-        # (q is pointer to Hi)
+        # (q is a pointer to Hi)
 
         # clear sign bit
         # [C] *(p+1)=*q&0X7FFF
-        # (p is pointer to Lo, q is pointer to Hi)
+        # (p is a pointer to Lo, q is a pointer to Hi)
         lo = set_short1(lo, get_short0(hi) & 0x7FFF)
 
         # Hi bits 31-45->K
         # [C] k=*(q+1)<<1
         # [C] if (*q&0x8000) { k++ }
-        # (q is pointer to Hi)
+        # (q is a pointer to Hi)
         k = get_short1(hi) << 1
         if (get_short0(hi) & 0x8000) != 0:
             k += 1
